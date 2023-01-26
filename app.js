@@ -1,14 +1,16 @@
 //jshint esversion:6
+// used to hide your api or any secret that you don't want them to see on git. MediaKeySession, dotenv is a
+require("dotenv").config();
 const express = require("express");
-const https = require("https")
-const bodyParser = require("body-parser")
-const request = require("request");
-const { append } = require("express/lib/response");
-const res = require("express/lib/response");
+// const https = require("https")
+// const bodyParser = require("body-parser")
+// const request = require("request");
+// const { append } = require("express/lib/response");
+// const res = require("express/lib/response");
 const port = 3006
 const app = express();
 const sheetdb = require("sheetdb-node");
-const client = sheetdb({ address: 'g1g8uhhk2jrln' });
+const client = sheetdb({ address: process.env.SHEETDBAPI });
 //const mailchimp = require("@mailchimp/mailchimp_marketing");
 const { post } = require("request");
 
@@ -18,7 +20,7 @@ const { post } = require("request");
 //});
 
 
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }))
 app.use(express.static("Public"))
 app.get("/", function (req, res) {
     res.sendFile(__dirname + "/signup.html")
