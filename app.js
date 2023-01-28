@@ -12,7 +12,7 @@ const app = express();
 const sheetdb = require("sheetdb-node");
 const client = sheetdb({ address: process.env.SHEETDBAPI });
 //const mailchimp = require("@mailchimp/mailchimp_marketing");
-const { post } = require("request");
+// const { post } = require("request");
 
 //mailchimp.setConfig({
 // apiKey: "69be50a207548a1ed887360f9897ac00-us7",
@@ -37,17 +37,26 @@ app.post("/", function (req, res) {
     client.read({ search: { firstName: firstName, lastName: lastName, email: email } }).then(function (info) {
         var convert = JSON.parse(info)
         console.log(convert)
+        console.log(convert.length)
         if (convert.length == 0) {
-            console.log("User does not exist")
+        //    if(convert[0].firstName == firstName && convert[0].lastName == lastName && convert[0].email == email){
+        //     res.sendFile(__dirname + "/failure.html")
+            //    user does not exist
             client.create({ firstName: firstName, lastName: lastName, email: email }).then(function (data) {
-                // var success = JSON.parse(data)
-                // if (success === {"created":1}/201){
-                //     res.send(__dirname + "/success.html")
-                // }
-                // else{"Please, try again!"}
+                const success = JSON.parse(data)
+                console.log(success)
+                if (success.created === 1){
+                 res.sendFile(__dirname + "/success.html")
+             }
+                else{ "Try again Soon!!!"}
                 console.log(data);
             })
-        } else { console.log('User Exists') }
+        } else if(convert.length == 0 && convert[0].email == email){
+            res.send("email exists!!!")
+        }
+        else { 
+            res.sendFile(__dirname + "/failure.html")
+        }
         // client.create({firstName: firstName, lastName:lastName, email: email}).then(function(data){
         //     console.log(data);
         // })
